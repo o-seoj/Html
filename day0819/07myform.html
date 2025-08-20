@@ -17,7 +17,37 @@
           font-weight: bold;
         }
     </style>
+
+
+    <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+
+    <script>
+      function execDaumPostcode() {
+          new daum.Postcode({
+              oncomplete: function(data) {
+                  var fullAddr = '';
+                  var extraAddr = '';
+                  
+                  if (data.userSelectedType === 'R') fullAddr = data.roadAddress;
+                  else fullAddr = data.jibunAddress;
+
+                  if(data.userSelectedType === 'R') {
+                      if(data.bname !== '') extraAddr += data.bname;
+                      if(data.buildingName !== '') extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                      
+                      fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+                  }
+
+                document.getElementById('user_post').value = data.zonecode; //5자리 새우편번호 사용
+                //document.getElementById("jusocode").value = data.postcode;
+                document.getElementById("user_juso1").value = fullAddr;
+                document.getElementById("user_juso2").focus();
+              }
+          }).open();
+      } //end
+    </script>
 </head>
+
 <body>
   <div style="width: 900px;">
   <form name="myform" action="" method="get">
@@ -76,6 +106,21 @@
         <div class="input_group">
           <label>참조코드:</label>
           <input type="text" name="user_code" value="1234" readonly>
+        </div>
+
+
+         <div class="input_group">
+            <label>우편:</label>
+            <input type="text" name="user_post" id="user_post" size="10" /> 
+            <input type="button" value="우편번호" onclick="execDaumPostcode();">
+        </div>
+        <div class="input_group">
+            <label>주소:</label>
+            <input type="text" name="user_juso1" id="user_juso1" /> 
+        </div>
+        <div class="input_group">
+            <label>상세주소:</label>
+            <input type="text" name="user_juso2" id="user_juso2" /> 
         </div>
 
          <div class="input_group">
